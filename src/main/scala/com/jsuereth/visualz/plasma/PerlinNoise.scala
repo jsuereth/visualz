@@ -1,42 +1,8 @@
 package com.jsuereth.visualz.plasma
 
-import java.awt.image.BufferedImage
-import java.io.File
-import javax.imageio.ImageIO
-
-/**
-  * Creates a plasma effect.
-  */
-object Plasma {
-  def main(args: Array[String]): Unit = {
-    val width = 256
-    val height = 256
-    val perlinWidth = 50
-    val perlinHeight = 50
-    val img = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR)
-    val perlin = PerlinNoise.random(perlinWidth, perlinHeight)
-    def color(noise: Float): Int = {
-      val size = (noise * 100).toInt + 100
-      (new java.awt.Color(size, size, size)).getRGB
-    }
-    for {
-      x <- 0 until width
-      y <- 0 until height
-      px = (x.toFloat / perlinWidth)
-      py = (y.toFloat / perlinHeight)
-      noise = perlin.noise(px,py)
-    } img.setRGB(x,y,color(noise))
-
-
-    val outputfile = new File("plasma.png")
-    ImageIO.write(img, "png", outputfile)
-  }
-}
-
-
 /**
   * A class to compute perline noise.
- *
+  *
   * @param width  The width of the gradient vector (second array)
   * @param height The height of hte gradient vector (first array)
   * @param gradient A vector of gradients - matrix(y)(x)(0 or 1)
@@ -44,8 +10,8 @@ object Plasma {
 // Precomputed (or otherwise) gradient vectors at each grid node
 class PerlinNoise(width: Int, height: Int, gradient: (Int, Int) => (Float, Float)) {
   /** Function to linearly interpolate between a0 and a1
-   * Weight w should be in the range [0.0, 1.0]
-   */
+    * Weight w should be in the range [0.0, 1.0]
+    */
   def lerp(a0: Float, a1: Float, w: Float): Float = (1.0f - w)*a0 + w*a1
 
 
@@ -106,3 +72,4 @@ object PerlinNoise {
     })
   }
 }
+
