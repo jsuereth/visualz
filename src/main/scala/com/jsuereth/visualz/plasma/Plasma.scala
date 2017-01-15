@@ -1,5 +1,6 @@
 package com.jsuereth.visualz.plasma
 
+import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
@@ -28,8 +29,20 @@ object Plasma {
     val time = 32
     val noiseGen = SimplexNoise.default
     def color(noise: Double): Int = {
-      val size = (noise * 255).toInt
-      ((new java.awt.Color(size, size, size)).getRGB)
+      // Specifically for diamond-square, let's do choose different colors based on height.
+      if (noise < 0.4f) {
+        // Ocean blue
+        val simple = (noise * 255).toInt
+        new Color(simple/2+60, simple/2+60, 100+simple).getRGB
+      } else if (noise < 0.8f) {
+        // Green
+        val simple = ((noise - 0.4f) * 128).toInt
+        new Color(simple/2+100, simple+100, simple/2+100).getRGB
+      } else {
+        // Borwn?
+        val simple = ((noise - 0.8f) * 256).toInt
+        ((new java.awt.Color(simple*2+100, simple*2+100, simple+100)).getRGB)
+      }
     }
     def wrap(t: Int): Int = {
       if (t > (time/2)) time - t else t
